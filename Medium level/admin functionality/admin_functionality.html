@@ -1,0 +1,161 @@
+ <html>
+  <head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+  </head>
+  <body>
+    <div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <h2>Product List</h2>
+            <table class="table table-bordered">
+                <thead>
+                <tr>
+                    <th>#SKU</th>
+                    <th>Product Name</th>
+                    <th>Price</th>
+                    <th>Description</th>
+                    <th>Is available</th>
+                </tr>
+                </thead>
+                <tbody id="products-list">
+                  <tr>
+                      <th scope="row">D33H1</th>
+                      <td>Macbook pro 13 inch</td>
+                      <td>1500$</td>
+                      <td>13-inch MacBook Pro with Retina display</td>
+                      <td>In-stock</td>
+                  </tr>
+                </tbody>
+            </table>
+ 
+            <h2>Add new Product</h2>
+            <form id="add-product-form" name="addproductform" onsubmit="AdminForm.handleSubmit()">
+                <div class="form-group">
+                    <label for="pTitle">Product title</label>
+                    <input type="text" name="pTitle" class="form-control" id="pTitle">
+                </div>
+                <div class="row">
+                    <div class="col-xs-2">
+                        <div class="form-group">
+                            <label for="pSKU">Product SKU</label>
+                            <div class="input-group">
+                                <div class="input-group-addon">#</div>
+                                <input type="text" name="pSKU" class="form-control" id="pSKU">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+ 
+                <div class="row">
+                    <div class="col-xs-2">
+                        <div class="form-group">
+                            <label for="pPrice">Product Price</label>
+                            <div class="input-group">
+                                <div class="input-group-addon">$</div>
+                                <input type="text" name="pPrice" class="form-control" id="pPrice">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+ 
+                <div class="form-group">
+                    <label for="pDesc">Product Description</label>
+                    <textarea name="pDesc" class="form-control" id="pDesc"></textarea>
+                </div>
+ 
+                <div class="form-group">
+                    <div class="checkbox">
+                        <label><input type="checkbox" name="pAvailability" id="pAvailability">Is available</label>
+                    </div>
+                </div>
+ 
+                <button id="addToCart" class="btn btn-success">Add Product</button>
+            </form>
+        </div>
+    </div>
+</div>
+    <script>
+      var AdminForm = {
+        init() {
+          this.productTitle = document.getElementById('pTitle');
+          this.productSKU = document.getElementById('pSKU');
+          this.productPrice = document.getElementById('pPrice');
+          this.productDescription = document.getElementById('pDesc');
+          this.productAvailability = document.getElementById('pAvailability');
+          this.addToCartBtn = document.getElementById('addToCart');
+          this.productTable = document.getElementById('products-list');
+
+          this.event();
+        },
+
+        event() {
+          this.addToCartBtn.addEventListener('click', this.handleSubmit.bind(this));
+          
+        },
+
+        addToCart() {
+          if (this.formValidation()) {
+            this.createNewProduct();
+            this.insertToTable();
+          } 
+        },
+
+        formValidation() {  
+          var regexPrice  = /^\d+(?:[.]\d+)*$/;
+
+          switch(true) {
+            case (this.productTitle.value.length < 1 || this.productSKU.value.length < 1 || this.productPrice.value.length < 1) :
+              alert('Please, fill in the form');
+              return false;
+            case (!regexPrice.test(this.productPrice.value)) :
+              alert('invalid value');
+              return false;
+            default:
+                return true;
+            }
+        },
+
+        createNewProduct() {
+          this.product = {
+            sku: this.productSKU.value,
+            title: this.productTitle.value,
+            price: this.productPrice.value + '$',
+            description: this.productDescription.value,
+            availability: this.productAvailability.checked ? 'In-stock' : 'Out of stock'
+          };
+        },
+
+        insertToTable() {
+          var row = this.productTable.insertRow();
+          var i = 0;
+          for(key in this.product) {
+            if(key == 'sku') {
+              var th = document.createElement('th');
+              th.innerHTML = this.product[key];
+              row.appendChild(th);
+            } else {
+              row.insertCell(i).innerHTML = this.product[key];
+            }
+            i++;
+          }
+        },
+
+        handleSubmit(e) {
+          e.preventDefault();
+          this.addToCart();
+          this.clearFields();
+        },
+
+        clearFields() {
+          this.productTitle.value = '';
+          this.productSKU.value = '';
+          this.productPrice.value = '';
+          this.productDescription.value = '';
+          this.productAvailability.checked = false;
+        }
+     };
+
+       AdminForm.init();
+    </script>
+  </body>
+</html>

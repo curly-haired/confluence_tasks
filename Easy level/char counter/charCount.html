@@ -1,0 +1,67 @@
+ <html>
+  <head>
+    <style>
+    </style>
+  </head>
+  <body>
+    <textarea name="message" id="js-message" cols="30" rows="10"></textarea>
+    <p>
+      Symbols total: 
+      <b id="js-message-left-total">0</b>
+      , left: 
+      <b id="js-message-left-symbols">0</b>
+    </p>
+
+    <script>
+      var TextCounter = {
+        maxChar: 5,
+        textArea: null,
+        textAreaTotal: null,
+        textAreaLeft: null,
+
+        init: function() {
+            this.textArea = document.querySelector('#js-message');
+            this.textAreaTotal = document.querySelector('#js-message-left-total');
+            this.textAreaLeft = document.querySelector('#js-message-left-symbols');
+
+            this.events();
+        },
+      
+        events: function() {
+          var self = this;
+          this.textArea.oninput = function(e) {
+            var value = self.textArea.value;
+
+            self.totalAmount();
+            self.textLeft();
+
+            if (value.length > self.maxChar) {
+              self.deleteText();
+            }
+          }
+        },
+
+        deleteText: function() {
+          this.value = this.textArea.value;
+          var value = this.textArea.value;
+          this.textArea.value = TextCounter.value.substr(0, this.maxChar);
+          this.totalAmount();
+          this.textLeft();
+        },
+
+        totalAmount: function() {
+          var value = this.textArea.value;
+          this.textAreaTotal.innerHTML = this.textArea.value.length;
+        },
+
+        textLeft: function() {
+          var value = this.maxChar - this.textArea.value.length;
+          this.textAreaLeft.innerHTML = value;
+        },
+
+      };
+
+      TextCounter.init();
+    </script>
+  </body>
+</html>
