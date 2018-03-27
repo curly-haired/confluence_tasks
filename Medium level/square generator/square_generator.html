@@ -1,0 +1,160 @@
+ <html>
+  <head>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      .container {
+        width: 500px;
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+
+      }
+      .square-item {
+        width: 40px;
+        margin: 5px;
+        height: 40px;
+        border: 1px solid red;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        font-size: 16px;
+        font-weight: bold;
+        text-align: center;
+        background-color: white;
+      }
+
+      .blink{
+          -webkit-animation: bgblink 1s;  /* Chrome, Safari, Opera */
+          -webkit-animation-iteration-count: 1;  /* Chrome, Safari, Opera */
+      }
+
+      @-webkit-keyframes bgblink {
+          from {background-color: white;}
+          50% {color: greenyellow}
+          to {background-color: white;}
+      }
+
+      @keyframes bgblink {
+          from {background-color: white}
+          50% {background-color:greenyellow}
+          to {background-color: white;}
+      }
+      
+      .yellow {
+        background-color: #FCF6A9;
+      }
+
+      .orange {
+        background-color: #FCCF05;
+      }
+      .dark-orange {
+        background-color: #FC8505;
+      }
+      .red {
+        background-color: #F50202;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+    </div>
+    <input id="genClick" type="button" value="Generate click"/>
+    <input id="result" type="button" value="show result"/>
+    <input id="reset"  type="button" value="Reset"/>
+
+    <script>
+      var SquareGenerator = {
+        init() {
+          this.container = document.getElementsByClassName('container')[0];
+          this.generateClickBtn = document.getElementById('genClick');
+          this.showResultBtn = document.getElementById('result');
+          this.resetBtn = document.getElementById('reset');
+
+          this.generateClickBtn.addEventListener('click', this.generateClick);
+          this.showResultBtn.addEventListener('click', this.showResult); 
+          this.resetBtn.addEventListener('click', this.reset); 
+
+          this.generateSquares();
+        },
+
+        generateSquares() {
+          for (var i = 0; i < 100; i++) {
+              this.squareItem = document.createElement('div');
+              this.squareItem.className = 'square-item';
+              this.squareItem.setAttribute('data-counter', 0);
+              this.container.appendChild(this.squareItem);
+          };
+
+          this.events();
+        },
+
+        events() {
+          var squareItems = document.getElementsByClassName('square-item');
+
+          for (let i = 0; i < squareItems.length; i++) {
+            squareItems[i].addEventListener('click', function(){
+              var elemAttribute = parseInt(this.getAttribute('data-counter') || 0);
+              this.setAttribute('data-counter', ++elemAttribute);
+              (function() {
+                  setTimeout(function(){
+                    squareItems[i].classList.add('blink');
+                    squareItems[i].innerHTML = elemAttribute;
+                  }, 500);
+              }())
+            });
+          }
+        },
+
+        generateClick() {
+          for (var i = 0; i < 100; i++) {
+            var randElem = Math.floor((Math.random() * 100));
+            var squareItem = document.getElementsByClassName('square-item')[i];
+            squareItem.classList.remove('yellow', 'orange', 'dark-orange', 'red', 'blink');
+            for (var j = 0; j < randElem; j++) {
+              squareItem.click();
+            }
+          }
+        },
+
+        showResult() {
+          var squareItems = document.getElementsByClassName('square-item');
+          for (var i = 0; i < squareItems.length; i++) {
+            var clicked = squareItems[i].getAttribute('data-counter');
+            switch (true) {
+              case (clicked < 50): 
+                squareItems[i].classList.remove('white');
+                squareItems[i].classList.add('yellow');
+                break;
+              case (clicked < 75):
+                squareItems[i].classList.remove('yellow');
+                squareItems[i].classList.add('orange');
+                break;
+              case (clicked <= 100):
+                squareItems[i].classList.remove('orange');
+                squareItems[i].classList.add('dark-orange');
+                break;
+              default: 
+                squareItems[i].classList.remove('dark-orange');
+                squareItems[i].classList.add('red');
+                break;
+            }
+            squareItems[i].innerHTML = clicked;
+          }
+        },
+
+        reset() {
+          var squareItems = document.getElementsByClassName('square-item');
+          for (var i = 0; i < squareItems.length; i++) {
+            squareItems[i].setAttribute('data-counter', 0);
+            squareItems[i].innerHTML = '';
+            squareItems[i].classList.remove('yellow', 'orange', 'dark-orange', 'red', 'blink');
+          }
+        }
+      };
+
+      SquareGenerator.init();
+    </script>
+  </body>
+</html>
